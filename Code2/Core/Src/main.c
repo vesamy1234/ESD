@@ -74,7 +74,7 @@ float kq=0;
 int64_t num1=0;
 uint8_t row=0;
 uint8_t check=0;
-
+uint8_t lock=0;
 const uint8_t key_code [8][2] =
 {
 		{7,8},
@@ -294,33 +294,43 @@ uint8_t Keypad_Getkey()
 }
 void Press (uint8_t key)
 {
-	if ((key==1) || (key==2) || (key==3) || (key==4) || (key==5) || (key==6) || (key==7) || (key==8) || (key==9) || (key==ko))
+	if (!lock)
 	{
-		if (key==ko)
+		if ((key==1) || (key==2) || (key==3) || (key==4) || (key==5) || (key==6) || (key==7) || (key==8) || (key==9) || (key==ko))
 		{
-			key=0;
-	    }
+			if (key==ko)
+			{
+				key=0;
+			}
+			num1 = num1*10 + key;
 			LCD_Write_Number(key);
-	}
-	if ((key==cong))
-	{
-		LCD_Write_String("+");
-		equaltion[pos] = 1;
-	}
-	else if ((key==tru))
-	{
-		LCD_Write_String("-");
-		equaltion[pos] = 2;
-	}
-	else if ((key==nhan))
-	{
-		LCD_Write_String("x");
-		equaltion[pos] = 3;
-	}
-	else if ((key==chia))
-	{
-		LCD_Write_String(":");
-		equaltion[pos] = 4;
+		}
+		if ((key==cong))
+		{
+			LCD_Write_String("+");
+			equaltion[pos] = 1;
+		}
+		else if ((key==tru))
+		{
+			LCD_Write_String("-");
+			equaltion[pos] = 2;
+		}
+		else if ((key==nhan))
+		{
+			LCD_Write_String("x");
+			equaltion[pos] = 3;
+		}
+		else if ((key==chia))
+		{
+			LCD_Write_String(":");
+			equaltion[pos] = 4;
+		}
+		if ((key==cong) || (key==tru) || (key==nhan) || (key==chia))
+		{
+			num[pos] = num1;
+			num1 = 0; //reset num1
+			pos++;
+		}
 	}
 	if (key==bang)
 	{
@@ -371,55 +381,69 @@ void Press (uint8_t key)
 			}
 
 		}
+		LCD_Send(cmd_reg, 0x0C); //tat con tro
 		LCD_Location(1, 0);
 		if (check==1) LCD_Write_String("ERROR");
 		else LCD_Write_Float(kq);
+		lock=1;
 	}
 	if (key==DEL)
 	{
+		lock=0;
+		LCD_Send(cmd_reg, 0x0E); //hien con tro
 		LCD_Clear();
 		LCD_Location(0, 0);
 		check=0;
+		num1=0;
+		pos=0;
+		for (uint8_t i = 0; i < 9; i++)
+		{
+		    equaltion[i] = 0;
+		}
+		for (uint8_t i = 0; i < 10; i++)
+		{
+		    num[i] = 0;
+		}
 	}
 }
-void Release (uint8_t key)
-{
-	  if ((key==1) || (key==2) || (key==3) || (key==4) || (key==5) || (key==6) || (key==7) || (key==8) || (key==9) || (key==ko))
-	  {
-		  if (key==ko)
-		  {
-			  key=0;
-		  }
-	 	  num1 = num1*10 + key;
-	  }
-	  if ((key==cong) || (key==tru) || (key==nhan) || (key==chia))
-	  {
-		  num[pos] = num1;
-		  num1 = 0; //reset num1
-		  pos++;
-	  }
-	  if (key==bang)
-	  {
-
-	  }
-	  if (key==DEL)
-	  {
-		  num1=0;
-		  pos=0;
-		  for (uint8_t i = 0; i < 9; i++) {
-		      equaltion[i] = 0;
-		  }
-		  for (uint8_t i = 0; i < 10; i++) {
-		      num[i] = 0;
-		  }
-	  }
-}
+//void Release (uint8_t key)
+//{
+//	  if ((key==1) || (key==2) || (key==3) || (key==4) || (key==5) || (key==6) || (key==7) || (key==8) || (key==9) || (key==ko))
+//	  {
+//		  if (key==ko)
+//		  {
+//			  key=0;
+//		  }
+//	 	  num1 = num1*10 + key;
+//	  }
+//	  if ((key==cong) || (key==tru) || (key==nhan) || (key==chia))
+//	  {
+//		  num[pos] = num1;
+//		  num1 = 0; //reset num1
+//		  pos++;
+//	  }
+//	  if (key==bang)
+//	  {
+//
+//	  }
+//	  if (key==DEL)
+//	  {
+//		  num1=0;
+//		  pos=0;
+//		  for (uint8_t i = 0; i < 9; i++) {
+//		      equaltion[i] = 0;
+//		  }
+//		  for (uint8_t i = 0; i < 10; i++) {
+//		      num[i] = 0;
+//		  }
+//	  }
+//}
 void Keypad_handle()
 {
 	if ( key_current != key_last )
 	{
 		if ( key_current !=0 ) Press(key_current);
-		else Release (key_last);
+//		else Release (key_last);
 		key_last = key_current;
 	}
 }
