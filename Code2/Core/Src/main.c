@@ -52,13 +52,13 @@ static void MX_GPIO_Init(void);
 void selectRow(uint8_t row);
 uint8_t Keypad_Getkey();
 void Press (uint8_t key);
-void Release (uint8_t key);
+//void Release (uint8_t key);
 void Keypad_handle();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define DEL 10
+#define AC 10
 #define cong 11
 #define tru 12
 #define nhan 13
@@ -68,13 +68,13 @@ void Keypad_handle();
 float num[10] = {0,0,0,0,0,0,0,0,0,0}; //luu so
 uint8_t equaltion[9] = {0,0,0,0,0,0,0,0,0}; // luu dau
 uint8_t pos = 0; //vi tri
-uint8_t key_current=0;
-uint8_t key_last=0;
-float kq=0;
-int64_t num1=0;
-uint8_t row=0;
-uint8_t check=0;
-uint8_t lock=0;
+uint8_t key_current=0; // gia tri hien tai cua nut nhan
+uint8_t key_last=0; // gia tri sau cung cua nut nhan
+float kq=0; // ket qua cua phep tinh
+int64_t num1=0; // so duoc bien doi tu cac so rieng le
+uint8_t row=0; // hang
+uint8_t check=0; // check loi chia 0
+uint8_t lock=0; // khoa LCD
 const uint8_t key_code [8][2] =
 {
 		{7,8},
@@ -84,7 +84,7 @@ const uint8_t key_code [8][2] =
 		{1,2},
 		{3,nhan},
 		{ko,bang},
-		{DEL,chia},
+		{AC,chia},
 };
 
 /* USER CODE END 0 */
@@ -122,6 +122,7 @@ int main(void)
   LCD_Init();
   LCD_Write_String("BTL ESD Nhom 18");
   HAL_Delay(2000);
+  LCD_Send(cmd_reg, 0x0E); //hien con tro
   LCD_Clear();
   /* USER CODE END 2 */
 
@@ -387,7 +388,7 @@ void Press (uint8_t key)
 		else LCD_Write_Float(kq);
 		lock=1;
 	}
-	if (key==DEL)
+	if (key==AC)
 	{
 		lock=0;
 		LCD_Send(cmd_reg, 0x0E); //hien con tro
@@ -426,7 +427,7 @@ void Press (uint8_t key)
 //	  {
 //
 //	  }
-//	  if (key==DEL)
+//	  if (key==AC)
 //	  {
 //		  num1=0;
 //		  pos=0;

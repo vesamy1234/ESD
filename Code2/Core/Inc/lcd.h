@@ -24,7 +24,7 @@ void LCD_Init();
 void LCD_Clear();
 void LCD_Location(uint8_t x, uint8_t y);
 void LCD_Write_String(char* string);
-void LCD_Write_Number(int number);
+void LCD_Write_Number(int8_t number);
 void LCD_Write_Float(float number) ;
 void floatToStr(float num, char *str, int8_t precision);
 

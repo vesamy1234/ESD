@@ -26,7 +26,7 @@ void LCD_Init()
 	LCD_Send(cmd_reg, 0x33);                   // lenh de khoi tao
 	LCD_Send(cmd_reg, 0x32);                  // lenh de khoi tao
 	LCD_Send(cmd_reg, 0x28);                   // che do 4 bit, 2 hang, 5x7
-	LCD_Send(cmd_reg, 0x0E);                   // hien thi man hinh va con tro
+	LCD_Send(cmd_reg, 0x0C);                   // hien thi man hinh
 	LCD_Send(cmd_reg, 0x06);                  // tang con tro
 	LCD_Send(cmd_reg, 0x01);                   // xoa toan man hinh
 }
@@ -48,7 +48,7 @@ void LCD_Write_String(char* string)              // ghi chuoi ki tu
 		LCD_Send(data_reg, string[i]);
 	}
 }
-void LCD_Write_Number(int number)                 // ghi chu so
+void LCD_Write_Number(int8_t number)                 // ghi chu so
 {
 	char buffer[8];
 	sprintf(buffer, "%d", number);
