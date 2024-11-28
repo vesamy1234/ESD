@@ -332,31 +332,15 @@ void Press (uint8_t key)
 			num1 = 0; //reset num1
 			pos++;
 		}
-	}
-	if (key==bang)
-	{
-		num[pos] = num1;
-		for(uint8_t i = 0; i < 9; i++)
+
+		if (key==bang)
 		{
-			if (equaltion[i] == 3)
+			num[pos] = num1;
+			for(uint8_t i = 0; i < 9; i++)
 			{
-				num[i+1] = num[i] * num[i+1];
-				num[i] = 0;
-				if (i>0)
+				if (equaltion[i] == 3)
 				{
-					equaltion[i] = equaltion[i-1];
-				}
-				else equaltion[i] = 1;
-			}
-			else if (equaltion[i] == 4)
-			{
-				if (num[i+1]==0)
-				{
-					check=1;
-				}
-				else
-				{
-					num[i+1] = num[i] / num[i+1];
+					num[i+1] = num[i] * num[i+1];
 					num[i] = 0;
 					if (i>0)
 					{
@@ -364,29 +348,46 @@ void Press (uint8_t key)
 					}
 					else equaltion[i] = 1;
 				}
+				else if (equaltion[i] == 4)
+				{
+					if (num[i+1]==0)
+					{
+						check=1;
+					}
+					else
+					{
+						num[i+1] = num[i] / num[i+1];
+						num[i] = 0;
+						if (i>0)
+						{
+							equaltion[i] = equaltion[i-1];
+						}
+						else equaltion[i] = 1;
+					}
+				}
 			}
-		}
-		for(uint8_t i = 0; i < 10; i++)
-		{
-			if (equaltion[i] == 1)
+			for(uint8_t i = 0; i < 10; i++)
 			{
-				num[i+1] = num[i] + num[i+1];
-			}
-			else if (equaltion[i] == 2)
-			{
-				num[i+1] = num[i] - num[i+1];
-			}
-			else if (equaltion[i] == 0) {
-				kq = num[i];
-				break;
-			}
+				if (equaltion[i] == 1)
+				{
+					num[i+1] = num[i] + num[i+1];
+				}
+				else if (equaltion[i] == 2)
+				{
+					num[i+1] = num[i] - num[i+1];
+				}
+				else if (equaltion[i] == 0) {
+					kq = num[i];
+					break;
+				}
 
+			}
+			LCD_Send(cmd_reg, 0x0C); //tat con tro
+			LCD_Location(1, 0);
+			if (check==1) LCD_Write_String("ERROR");
+			else LCD_Write_Float(kq);
+			lock=1;
 		}
-		LCD_Send(cmd_reg, 0x0C); //tat con tro
-		LCD_Location(1, 0);
-		if (check==1) LCD_Write_String("ERROR");
-		else LCD_Write_Float(kq);
-		lock=1;
 	}
 	if (key==AC)
 	{
